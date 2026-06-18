@@ -1,0 +1,12 @@
+{
+  "client_id": "client_123",
+  "behavioral_attention_risk": 62.5,
+  "risk_band": "high",
+  "top_reasons": [
+    "Behavioral drift increased over the last review period",
+    "Panic propensity signal elevated"
+  ],
+  "advisor_review_required": true,
+  "not_investment_advice": true,
+  "generated_at": "2026-06-18T09:00:00Z"
+}

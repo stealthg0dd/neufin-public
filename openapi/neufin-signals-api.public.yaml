@@ -1,0 +1,355 @@
+openapi: 3.0.3
+info:
+  title: NeuFin Signals API (Public Contract)
+  version: 0.1.0-public-preview
+  description: >
+    Public contract for the NeuFin Signals API. This describes the shape of
+    requests and responses only — it does not document NeuFin's internal
+    scoring methodology, which is proprietary. The Signals API is currently
+    in **private beta**; request access at https://www.neufin.ai/contact-sales
+    or https://www.neufin.ai/developer.
+
+
+    Every response includes `advisor_review_required: true` and
+    `not_investment_advice: true`. NeuFin does not execute trades, mutate
+    portfolios, send client communications, or make suitability
+    determinations. All outputs are signals for human advisor review.
+  contact:
+    name: NeuFin AI
+    url: https://www.neufin.ai
+    email: info@neufin.ai
+  license:
+    name: Proprietary — see repository SECURITY.md and CONTRIBUTING.md
+
+servers:
+  - url: https://api.neufin.ai
+    description: >
+      Placeholder public API gateway. Private beta — endpoints require an
+      approved API key issued after a partner conversation. See
+      https://www.neufin.ai/developer.
+
+tags:
+  - name: signals
+    description: Read-only behavioral signal endpoints.
+  - name: advisor
+    description: Advisor-facing summary endpoints.
+
+paths:
+  /v1/signals/client-risk/{client_id}:
+    get:
+      tags: [signals]
+      summary: Get behavioral risk signal for a single client
+      operationId: getClientBehavioralRisk
+      parameters:
+        - $ref: '#/components/parameters/ClientId'
+      responses:
+        '200':
+          description: Behavioral risk signal for the requested client.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientRiskResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /v1/signals/book-alerts:
+    get:
+      tags: [signals]
+      summary: List ranked behavioral alerts across an advisor's book
+      operationId: listBookBehavioralAlerts
+      responses:
+        '200':
+          description: Ranked list of clients with elevated behavioral signals.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookAlertsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/signals/churn-score/{client_id}:
+    get:
+      tags: [signals]
+      summary: Get Churn Probability Score for a client
+      operationId: getChurnProbabilityScore
+      description: >
+        See docs/churn-probability-score.md for the concept. The exact
+        scoring formula is not part of this public contract.
+      parameters:
+        - $ref: '#/components/parameters/ClientId'
+      responses:
+        '200':
+          description: Churn Probability Score for the requested client.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChurnScoreResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /v1/signals/suitability-drift/{client_id}:
+    get:
+      tags: [signals]
+      summary: Get suitability drift signal for a client
+      operationId: detectSuitabilityDrift
+      description: >
+        See docs/suitability-drift.md for the concept. The exact detection
+        logic is not part of this public contract.
+      parameters:
+        - $ref: '#/components/parameters/ClientId'
+      responses:
+        '200':
+          description: Suitability drift signal for the requested client.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuitabilityDriftResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /v1/signals/life-event:
+    post:
+      tags: [signals]
+      summary: Report a known client life event to inform future signals
+      operationId: reportLifeEvent
+      description: >
+        Lets an integrating system (CRM, advisor AI agent) inform NeuFin of
+        a known life event (e.g. job change, retirement, inheritance) that
+        may affect a client's suitability or risk profile. This endpoint
+        records context only — it does not trigger any automated action.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LifeEventRequest'
+      responses:
+        '202':
+          description: Life event recorded for future signal context.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifeEventResponse'
+        '400':
+          description: Invalid request body.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/advisor/brief:
+    get:
+      tags: [advisor]
+      summary: Get a generated advisor brief summarizing book-wide signals
+      operationId: generateAdvisorBrief
+      responses:
+        '200':
+          description: Advisor brief summarizing current behavioral signals.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdvisorBriefResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  parameters:
+    ClientId:
+      name: client_id
+      in: path
+      required: true
+      description: Opaque client identifier, as assigned by the integrating platform.
+      schema:
+        type: string
+        example: client_123
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid API key.
+    NotFound:
+      description: No client found for the given identifier.
+
+  schemas:
+    AdvisorReviewEnvelope:
+      type: object
+      description: Fields present on every NeuFin signal response.
+      required:
+        - advisor_review_required
+        - not_investment_advice
+        - generated_at
+      properties:
+        advisor_review_required:
+          type: boolean
+          enum: [true]
+          description: Always true. Every signal is an input to human review, never an autonomous trigger.
+        not_investment_advice:
+          type: boolean
+          enum: [true]
+          description: Always true. No NeuFin output is a recommendation to buy, sell, or hold any security.
+        generated_at:
+          type: string
+          format: date-time
+
+    ClientRiskResponse:
+      allOf:
+        - $ref: '#/components/schemas/AdvisorReviewEnvelope'
+        - type: object
+          required: [client_id, behavioral_attention_risk, risk_band]
+          properties:
+            client_id:
+              type: string
+              example: client_123
+            behavioral_attention_risk:
+              type: number
+              minimum: 0
+              maximum: 100
+              example: 62.5
+            risk_band:
+              type: string
+              enum: [low, medium, high, critical]
+              example: high
+            top_reasons:
+              type: array
+              items:
+                type: string
+              example:
+                - "Behavioral drift increased over the last review period"
+                - "Panic propensity signal elevated"
+
+    BookAlertsResponse:
+      allOf:
+        - $ref: '#/components/schemas/AdvisorReviewEnvelope'
+        - type: object
+          required: [alerts]
+          properties:
+            alerts:
+              type: array
+              items:
+                type: object
+                properties:
+                  client_id:
+                    type: string
+                    example: client_456
+                  risk_band:
+                    type: string
+                    enum: [low, medium, high, critical]
+                    example: critical
+                  primary_signal:
+                    type: string
+                    example: suitability_drift
+
+    ChurnScoreResponse:
+      allOf:
+        - $ref: '#/components/schemas/AdvisorReviewEnvelope'
+        - type: object
+          required: [client_id, churn_probability_score, risk_band]
+          properties:
+            client_id:
+              type: string
+              example: client_123
+            churn_probability_score:
+              type: number
+              minimum: 0
+              maximum: 100
+              example: 72.4
+            risk_band:
+              type: string
+              enum: [low, medium, high, critical]
+              example: high
+            top_reasons:
+              type: array
+              items:
+                type: string
+            advisor_next_action:
+              type: array
+              items:
+                type: string
+              example:
+                - "Schedule advisor review"
+                - "Review portfolio concentration and client communication history"
+
+    SuitabilityDriftResponse:
+      allOf:
+        - $ref: '#/components/schemas/AdvisorReviewEnvelope'
+        - type: object
+          required: [client_id, drift_band]
+          properties:
+            client_id:
+              type: string
+              example: client_123
+            drift_score:
+              type: number
+              minimum: 0
+              maximum: 100
+              example: 41.0
+            drift_band:
+              type: string
+              enum: [within_tolerance, mild_drift, significant_drift, critical_drift]
+              example: mild_drift
+            top_reasons:
+              type: array
+              items:
+                type: string
+
+    LifeEventRequest:
+      type: object
+      required: [client_id, event_type]
+      properties:
+        client_id:
+          type: string
+          example: client_123
+        event_type:
+          type: string
+          enum: [job_change, retirement, inheritance, divorce, market_shock_reaction, other]
+          example: retirement
+        notes:
+          type: string
+          description: Free-text context. Do not include sensitive personal data beyond what's necessary.
+          example: "Client confirmed retirement effective next quarter."
+
+    LifeEventResponse:
+      allOf:
+        - $ref: '#/components/schemas/AdvisorReviewEnvelope'
+        - type: object
+          required: [client_id, recorded]
+          properties:
+            client_id:
+              type: string
+              example: client_123
+            recorded:
+              type: boolean
+              example: true
+
+    AdvisorBriefResponse:
+      allOf:
+        - $ref: '#/components/schemas/AdvisorReviewEnvelope'
+        - type: object
+          required: [summary]
+          properties:
+            summary:
+              type: string
+              example: "3 clients flagged for review this week: 1 critical suitability drift, 2 high churn risk."
+            highlighted_clients:
+              type: array
+              items:
+                type: object
+                properties:
+                  client_id:
+                    type: string
+                    example: client_123
+                  reason:
+                    type: string
+                    example: "Critical suitability drift"
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-NeuFin-API-Key
+
+security:
+  - ApiKeyAuth: []

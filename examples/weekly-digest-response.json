@@ -1,0 +1,20 @@
+{
+  "summary": "3 clients flagged for review this week: 1 critical suitability drift, 2 high churn risk.",
+  "highlighted_clients": [
+    {
+      "client_id": "client_123",
+      "reason": "Critical suitability drift"
+    },
+    {
+      "client_id": "client_456",
+      "reason": "High churn probability score"
+    },
+    {
+      "client_id": "client_789",
+      "reason": "High churn probability score"
+    }
+  ],
+  "advisor_review_required": true,
+  "not_investment_advice": true,
+  "generated_at": "2026-06-18T09:00:00Z"
+}

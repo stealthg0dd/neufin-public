@@ -1,0 +1,12 @@
+{
+  "client_id": "client_123",
+  "drift_score": 41.0,
+  "drift_band": "mild_drift",
+  "top_reasons": [
+    "Reported life event: retirement",
+    "Portfolio risk mismatch increased over the last quarter"
+  ],
+  "advisor_review_required": true,
+  "not_investment_advice": true,
+  "generated_at": "2026-06-18T09:00:00Z"
+}
