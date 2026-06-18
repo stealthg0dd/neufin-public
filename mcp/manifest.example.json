@@ -1,0 +1,46 @@
+{
+  "name": "neufin-behavioral-signals",
+  "description": "Example MCP manifest for NeuFin's behavioral intelligence tools. Private beta — this is a documentation example, not a live, publicly reachable endpoint. All tools are read-only and produce advisor-review-only output; none of them execute trades, mutate portfolios, send client communications, or make suitability determinations.",
+  "version": "0.1.0-public-preview",
+  "server": {
+    "type": "url",
+    "url": "https://api.neufin.ai/mcp",
+    "auth": {
+      "type": "header",
+      "header": "X-NeuFin-MCP-Key",
+      "value": "YOUR_MCP_KEY_HERE"
+    }
+  },
+  "tools": [
+    {
+      "name": "get_client_behavioral_risk",
+      "description": "Read-only. Returns a behavioral risk score for a single client. Advisor-review-only — does not authorize any automated action.",
+      "readOnly": true,
+      "advisorReviewOnly": true
+    },
+    {
+      "name": "list_book_behavioral_alerts",
+      "description": "Read-only. Returns a ranked list of at-risk clients across an advisor's book. Advisor-review-only — does not authorize any automated action.",
+      "readOnly": true,
+      "advisorReviewOnly": true
+    },
+    {
+      "name": "get_churn_probability_score",
+      "description": "Read-only. Returns the Churn Probability Score (0-100) for a client with top contributing reasons. Advisor-review-only — does not authorize any automated action.",
+      "readOnly": true,
+      "advisorReviewOnly": true
+    },
+    {
+      "name": "detect_suitability_drift",
+      "description": "Read-only. Returns the divergence between a client's observed behavior and their stated risk profile. Advisor-review-only — does not authorize any automated action.",
+      "readOnly": true,
+      "advisorReviewOnly": true
+    },
+    {
+      "name": "generate_advisor_brief",
+      "description": "Read-only. Returns a generated morning brief summarizing behavioral signals for an advisor's book. Advisor-review-only — does not authorize any automated action.",
+      "readOnly": true,
+      "advisorReviewOnly": true
+    }
+  ]
+}
