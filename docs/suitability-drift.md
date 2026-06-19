@@ -1,5 +1,9 @@
 # Suitability Drift
 
+> **Advisor-review-only.** NeuFin does not execute trades, mutate
+> portfolios, send client communications, provide investment advice, or
+> make suitability determinations. All outputs require advisor review.
+
 ## What it is
 
 Suitability drift is the divergence between a client's stated or inferred

@@ -1,67 +1,164 @@
-# NeuFin AI Public Developer Docs
+# NeuFin Behavioral Signals MCP Server — Public Docs
 
-**Behavioral intelligence layer for advisor AI systems.**
+> Behavioral intelligence for advisor AI systems.
+> Read-only MCP tools for human IFAs and the agentic stacks they deploy.
 
-This repository contains NeuFin AI's **public** developer documentation:
-API contracts, conceptual docs, MCP (Model Context Protocol) beta examples,
-and sample responses. It exists to make NeuFin's behavioral-signals
-approach discoverable, reviewable, and integrable by developers, advisor AI
-platforms, and search/LLM crawlers.
+## What this is
 
-**NeuFin's production application — the web app, backend services, scoring
-engine, and infrastructure — is closed-source and lives in a private
-repository.** Nothing in this repo is runnable application code. Everything
-here is a contract: what the API and MCP tools look like from the outside,
-and what concepts they implement, without exposing how they're computed
-internally.
+NeuFin Behavioral Signals is a private-beta MCP server and Signals API for
+AI-augmented wealth advisory workflows.
 
-## What's in this repo
+It exposes read-only behavioral intelligence tools that advisor AI agents
+can call before taking action on a client workflow. The goal is to act as
+a behavioral guardrail layer for advisor AI, wealth CRMs, and agentic
+advisory systems.
 
-| Path | Contents |
-|---|---|
-| `docs/behavioral-guardrails-for-advisor-ai.md` | What a "behavioral guardrail" is and why agentic wealth workflows need one |
-| `docs/churn-probability-score.md` | Concept doc for the Churn Probability Score (CPS) |
-| `docs/suitability-drift.md` | Concept doc for Suitability Drift detection |
-| `docs/advisor-review-signals.md` | The shared response contract every NeuFin signal follows |
-| `openapi/neufin-signals-api.public.yaml` | Public OpenAPI contract for the NeuFin Signals API (private beta) |
-| `mcp/manifest.example.json` | Example MCP server manifest (no real keys or endpoints) |
-| `mcp/tools.example.md` | Description of each MCP tool exposed to advisor AI agents |
-| `examples/*.json` | Sample (synthetic) API responses |
+All outputs are:
 
-## Links
+- read-only
+- advisor-review-only
+- not investment advice
+- not suitability determinations
+- not trade instructions
+- not client communications
 
-- Product: [https://www.neufin.ai](https://www.neufin.ai)
-- Developer hub: [https://www.neufin.ai/developer](https://www.neufin.ai/developer)
-- Behavioral guardrails explainer: [https://www.neufin.ai/intelligence/behavioral-guardrails-for-advisor-ai](https://www.neufin.ai/intelligence/behavioral-guardrails-for-advisor-ai)
-- Glossary — Churn Probability Score: [https://www.neufin.ai/glossary/churn-probability-score](https://www.neufin.ai/glossary/churn-probability-score)
-- Glossary — Suitability Drift: [https://www.neufin.ai/glossary/suitability-drift](https://www.neufin.ai/glossary/suitability-drift)
-- Talk to us: [https://www.neufin.ai/contact-sales](https://www.neufin.ai/contact-sales)
+## Why this matters
 
-## What NeuFin does — and does not — do
+Advisor AI is moving from note-taking and summarization into workflow
+automation and agentic assistance. As AI systems query CRM, portfolio,
+planning, and meeting data, firms need a behavioral review layer before an
+action is recommended, escalated, or prepared.
 
-NeuFin surfaces behavioral signals for human advisors and the AI agents
-they deploy. Every signal in this repo's contracts is designed for advisor
-review, not autonomous action.
+NeuFin provides that behavioral context.
 
-NeuFin does **not**:
-- give investment advice
-- execute trades
-- mutate portfolios
-- send client communications
-- make suitability determinations
+## Available MCP tools
 
-Every API and MCP response described in this repo includes
-`advisor_review_required: true` and `not_investment_advice: true`.
+1. `get_client_behavioral_risk`
+2. `list_book_behavioral_alerts`
+3. `get_churn_probability_score`
+4. `detect_suitability_drift`
+5. `generate_advisor_brief`
 
-## Status
+Each tool is read-only and returns:
+`advisor_review_required: true`
 
-The Signals API and MCP server are in **private beta**. Endpoints and
-schemas in this repo are public contracts subject to change before general
-availability. Request access via [contact-sales](https://www.neufin.ai/contact-sales)
-or the [developer hub](https://www.neufin.ai/developer).
+## Tool summary
 
-## License
+### `get_client_behavioral_risk`
 
-Documentation and examples in this repo are provided for integration
-reference. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose
-changes and [SECURITY.md](SECURITY.md) for how to report a security issue.
+Returns a behavioral risk score and rationale for a single client.
+
+### `list_book_behavioral_alerts`
+
+Returns a ranked list of clients requiring advisor attention this week.
+
+### `get_churn_probability_score`
+
+Returns a 0–100 Churn Probability Score for a single client.
+
+### `detect_suitability_drift`
+
+Detects divergence between a client's stated risk profile and observed
+behavioral / portfolio risk state.
+
+### `generate_advisor_brief`
+
+Generates a morning brief for an advisor with top clients needing
+attention.
+
+See [docs/mcp-tools.md](docs/mcp-tools.md) for full input/output schemas,
+error codes, and example requests/responses for every tool.
+
+## Authentication
+
+Private beta access uses API key authentication.
+
+Header:
+`X-NeuFin-MCP-Key: your-beta-key-here`
+
+Do not put real keys in GitHub issues, examples, commits, or public logs.
+
+## Private beta endpoint
+
+The MCP server is currently private beta.
+
+Developer access:
+[https://www.neufin.ai/developer](https://www.neufin.ai/developer)
+
+Contact:
+[info@neufin.ai](mailto:info@neufin.ai)
+
+Do not claim public production availability until the endpoint is
+generally available.
+
+## Claude Desktop configuration example
+
+```json
+{
+  "mcpServers": {
+    "neufin-behavioral": {
+      "type": "url",
+      "url": "https://api.neufin.ai/mcp",
+      "headers": {
+        "X-NeuFin-MCP-Key": "your-beta-key-here"
+      }
+    }
+  }
+}
+```
+
+This is a private beta configuration example. Replace the URL and key
+with values provided by NeuFin during beta onboarding.
+
+## Security model
+
+- Private beta only
+- API key required
+- Read-only tools
+- No writes
+- No portfolio mutation
+- No trade execution
+- No client emails or notifications
+- No billing/auth/payment access
+- No real PII in logs
+- Advisor review required on every response
+
+## What this server will not do
+
+- Execute trades or rebalances
+- Send emails or push notifications to clients
+- Modify portfolios, CRM records, client records, or billing data
+- Provide investment advice
+- Make suitability determinations
+- Replace licensed advisor judgment
+
+## Documentation
+
+- [docs/mcp-tools.md](docs/mcp-tools.md)
+- [docs/behavioral-guardrails-for-advisor-ai.md](docs/behavioral-guardrails-for-advisor-ai.md)
+- [docs/churn-probability-score.md](docs/churn-probability-score.md)
+- [docs/suitability-drift.md](docs/suitability-drift.md)
+- [docs/advisor-review-signals.md](docs/advisor-review-signals.md)
+- [openapi/neufin-signals-api.public.yaml](openapi/neufin-signals-api.public.yaml)
+- [mcp/manifest.example.json](mcp/manifest.example.json)
+- [mcp/tools.example.md](mcp/tools.example.md)
+
+## Company
+
+NeuFin AI is the behavioral intelligence layer for IFAs and AI-augmented
+wealth advisory.
+
+Neufin OÜ — Estonia, EU
+Neufin Inc. — Delaware, USA
+Website: [https://www.neufin.ai](https://www.neufin.ai)
+Developer access: [https://www.neufin.ai/developer](https://www.neufin.ai/developer)
+Contact: [info@neufin.ai](mailto:info@neufin.ai)
+
+## Disclaimer
+
+All NeuFin MCP tool outputs are behavioral signals for advisor review
+only. They are not investment advice and do not constitute a
+recommendation to buy, sell, or hold any security. Outputs are designed
+to support, not replace, licensed advisor judgment. Advisors remain
+responsible for all client relationship, suitability, and regulatory
+decisions in their jurisdiction.

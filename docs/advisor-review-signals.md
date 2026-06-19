@@ -15,11 +15,16 @@ represents. This page documents that shared shape.
 Endpoint-specific fields (scores, bands, reasons) are documented per-path
 in [`openapi/neufin-signals-api.public.yaml`](../openapi/neufin-signals-api.public.yaml).
 
+> **Advisor-review-only.** NeuFin does not execute trades, mutate
+> portfolios, send client communications, provide investment advice, or
+> make suitability determinations. All outputs require advisor review.
+
 ## What NeuFin signals never do
 
 - Execute a trade
 - Mutate a portfolio
 - Send a client communication
+- Provide investment advice
 - Make a suitability determination on the advisor's behalf
 
 ## Why this matters for AI agents
