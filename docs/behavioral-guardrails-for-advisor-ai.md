@@ -1,5 +1,9 @@
 # Behavioral guardrails for advisor AI
 
+> **Advisor-review-only.** NeuFin does not execute trades, mutate
+> portfolios, send client communications, provide investment advice, or
+> make suitability determinations. All outputs require advisor review.
+
 AI agents are starting to act directly on wealth management workflows —
 querying CRMs, reading portfolios, and proposing actions. What they
 typically lack is behavioral context: whether a specific client is in a

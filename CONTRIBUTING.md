@@ -35,3 +35,7 @@ welcome for:
 - OpenAPI and MCP examples should stay synthetic — no real client IDs,
   account numbers, or production hostnames beyond the documented public
   API gateway placeholder.
+
+> **Advisor-review-only.** NeuFin does not execute trades, mutate
+> portfolios, send client communications, provide investment advice, or
+> make suitability determinations. All outputs require advisor review.

@@ -1,5 +1,9 @@
 # Churn Probability Score (CPS)
 
+> **Advisor-review-only.** NeuFin does not execute trades, mutate
+> portfolios, send client communications, provide investment advice, or
+> make suitability determinations. All outputs require advisor review.
+
 ## What it is
 
 A Churn Probability Score (CPS) is a 0–100 score estimating the likelihood

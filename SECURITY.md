@@ -7,6 +7,11 @@ apply directly to its contents. If you find an issue in NeuFin's actual
 product (the API, MCP server, or web app) that you discovered through
 information in this repo, please still report it.
 
+The NeuFin Behavioral Signals MCP server and Signals API are currently
+**private beta** — they are not generally available, and the contracts
+documented in this repo are subject to change before general
+availability.
+
 ## Reporting a vulnerability
 
 **Do not file a public GitHub issue for a security report.**
@@ -34,3 +39,7 @@ public report against this repository. If your report requires sharing
 such material to demonstrate the issue, send it directly to
 **info@neufin.ai** instead, and reference it generically in any public
 issue you open.
+
+> **Advisor-review-only.** NeuFin does not execute trades, mutate
+> portfolios, send client communications, provide investment advice, or
+> make suitability determinations. All outputs require advisor review.
