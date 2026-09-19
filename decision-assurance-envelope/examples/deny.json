@@ -1,0 +1,44 @@
+{
+  "decision_id": "dec_5b1d40",
+  "trace_id": "trace_63c9d1",
+  "organization_id": "org_acme_wealth",
+  "investor_id": "inv_60934",
+  "actor_or_agent": {
+    "type": "ai_agent",
+    "id": "agent_outreach_v1",
+    "name": "Outreach Drafting Agent"
+  },
+  "mandate": {
+    "scope": "propose_only",
+    "authorized_actions": ["draft_client_communication"],
+    "constraints": ["no_direct_send"]
+  },
+  "investor_context": {
+    "risk_tolerance": "moderate",
+    "time_horizon": "5-10 years",
+    "investment_policy_summary": "Growth-oriented, standard suitability profile"
+  },
+  "portfolio_context": {
+    "as_of": "2026-09-19T00:00:00Z",
+    "concentration_summary": "Diversified, no material concentration risk"
+  },
+  "proposed_action": {
+    "type": "client_communication",
+    "description": "Send a recommendation to buy a specific security not on the firm's approved list"
+  },
+  "suitability": {
+    "match": false,
+    "notes": "Security is not on the firm's approved or reviewed list"
+  },
+  "policy": {
+    "match": false,
+    "notes": "Recommending unapproved securities is prohibited by firm policy"
+  },
+  "evidence": {
+    "sources": ["firm_policy_manual", "approved_securities_list"],
+    "reasoning_summary": "Proposed security fails a hard policy constraint; not eligible for advisor review as-is"
+  },
+  "confidence": 0.98,
+  "disposition": "DENY",
+  "created_at": "2026-09-19T00:00:00Z"
+}

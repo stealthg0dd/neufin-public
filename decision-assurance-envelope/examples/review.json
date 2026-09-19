@@ -1,0 +1,44 @@
+{
+  "decision_id": "dec_9f2a1c",
+  "trace_id": "trace_88b210",
+  "organization_id": "org_acme_wealth",
+  "investor_id": "inv_44210",
+  "actor_or_agent": {
+    "type": "ai_agent",
+    "id": "agent_rebalance_v2",
+    "name": "Rebalance Copilot"
+  },
+  "mandate": {
+    "scope": "propose_only",
+    "authorized_actions": ["propose_rebalance"],
+    "constraints": ["no_direct_execution"]
+  },
+  "investor_context": {
+    "risk_tolerance": "moderate",
+    "time_horizon": "10+ years",
+    "investment_policy_summary": "Balanced growth, max 15% single-position concentration"
+  },
+  "portfolio_context": {
+    "as_of": "2026-09-19T00:00:00Z",
+    "concentration_summary": "22% in a single technology position"
+  },
+  "proposed_action": {
+    "type": "rebalance",
+    "description": "Trim technology position from 22% to 15% of portfolio"
+  },
+  "suitability": {
+    "match": false,
+    "notes": "Current concentration exceeds investment policy limit"
+  },
+  "policy": {
+    "match": true,
+    "notes": "No restricted-list conflicts"
+  },
+  "evidence": {
+    "sources": ["portfolio_feed", "investment_policy_statement"],
+    "reasoning_summary": "Concentration limit exceeded per IPS section 4.2; proposed trim addresses it but should be reviewed with the client"
+  },
+  "confidence": 0.91,
+  "disposition": "REVIEW",
+  "created_at": "2026-09-19T00:00:00Z"
+}

@@ -27,6 +27,7 @@ internally.
 | `mcp/manifest.example.json` | Example MCP server manifest (no real keys or endpoints) |
 | `mcp/tools.example.md` | Description of each MCP tool exposed to advisor AI agents |
 | `examples/*.json` | Sample (synthetic) API responses |
+| `decision-assurance-envelope/` | The NeuFin Decision Assurance Envelope v1 specification — schema, examples, docs, and validators |
 
 ## Links
 

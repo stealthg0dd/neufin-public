@@ -1,0 +1,46 @@
+{
+  "decision_id": "dec_2c8e91",
+  "trace_id": "trace_51f7aa",
+  "organization_id": "org_acme_wealth",
+  "investor_id": "inv_50871",
+  "actor_or_agent": {
+    "type": "human_actor",
+    "id": "advisor_2214",
+    "name": "J. Alvarez"
+  },
+  "mandate": {
+    "scope": "propose_only",
+    "authorized_actions": ["propose_liquidity_event"],
+    "constraints": ["requires_senior_review_above_threshold"]
+  },
+  "investor_context": {
+    "risk_tolerance": "conservative",
+    "time_horizon": "3-5 years",
+    "investment_policy_summary": "Capital preservation, low drawdown tolerance",
+    "behavioral_history_summary": "Client sold near the bottom during the 2024 drawdown"
+  },
+  "portfolio_context": {
+    "as_of": "2026-09-19T00:00:00Z",
+    "concentration_summary": "Diversified, no single position above 8%",
+    "recent_activity_summary": "Client requested a large discretionary withdrawal this week"
+  },
+  "proposed_action": {
+    "type": "liquidity_event",
+    "description": "Liquidate 40% of portfolio for a discretionary withdrawal request"
+  },
+  "suitability": {
+    "match": false,
+    "notes": "Withdrawal size combined with prior panic-selling history raises behavioral risk concern"
+  },
+  "policy": {
+    "match": false,
+    "notes": "Withdrawal exceeds the threshold requiring senior advisor sign-off"
+  },
+  "evidence": {
+    "sources": ["portfolio_feed", "behavioral_history", "firm_policy_manual"],
+    "reasoning_summary": "Large withdrawal combined with a documented history of panic-selling and a policy threshold breach"
+  },
+  "confidence": 0.87,
+  "disposition": "ESCALATE",
+  "created_at": "2026-09-19T00:00:00Z"
+}

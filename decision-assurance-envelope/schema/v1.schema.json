@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.neufin.ai/specs/decision-assurance-envelope/v1.schema.json",
+  "title": "NeuFin Decision Assurance Envelope",
+  "description": "NeuFin's Decision Assurance Envelope specification (v1) — a machine-readable structure for representing a single proposed financial decision, the investor and portfolio context behind it, and the human-review disposition that resolves it. This is a NeuFin specification, not an industry, regulatory, or official standard.",
+  "type": "object",
+  "version": "1.0.0",
+  "required": [
+    "decision_id",
+    "trace_id",
+    "organization_id",
+    "investor_id",
+    "actor_or_agent",
+    "mandate",
+    "investor_context",
+    "portfolio_context",
+    "proposed_action",
+    "suitability",
+    "evidence",
+    "disposition"
+  ],
+  "properties": {
+    "decision_id": {
+      "type": "string",
+      "description": "Unique identifier for this specific proposed decision."
+    },
+    "trace_id": {
+      "type": "string",
+      "description": "Identifier linking this decision to a broader workflow or conversation trace, for cross-system correlation."
+    },
+    "organization_id": {
+      "type": "string",
+      "description": "Identifier for the organization (advisory firm, platform, or enterprise tenant) this decision was evaluated within."
+    },
+    "investor_id": {
+      "type": "string",
+      "description": "Identifier for the specific investor this decision concerns."
+    },
+    "actor_id": {
+      "type": "string",
+      "description": "Identifier for the human actor (advisor, ops user) associated with this decision, when applicable."
+    },
+    "agent_id": {
+      "type": "string",
+      "description": "Identifier for the AI agent associated with this decision, when applicable."
+    },
+    "actor_or_agent": {
+      "type": "object",
+      "description": "Identity of whoever proposed this decision.",
+      "required": ["type", "id"],
+      "properties": {
+        "type": { "type": "string", "enum": ["human_actor", "ai_agent"] },
+        "id": { "type": "string" },
+        "name": { "type": "string" }
+      }
+    },
+    "mandate": {
+      "type": "object",
+      "description": "What the actor or agent is actually authorized to do for this investor.",
+      "properties": {
+        "scope": { "type": "string" },
+        "authorized_actions": { "type": "array", "items": { "type": "string" } },
+        "constraints": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "investor_context": {
+      "type": "object",
+      "description": "What is known about the investor relevant to this decision.",
+      "properties": {
+        "risk_tolerance": { "type": "string" },
+        "time_horizon": { "type": "string" },
+        "investment_policy_summary": { "type": "string" },
+        "behavioral_history_summary": { "type": "string" }
+      }
+    },
+    "portfolio_context": {
+      "type": "object",
+      "description": "The current, relevant state of the investor's holdings.",
+      "properties": {
+        "as_of": { "type": "string", "format": "date-time" },
+        "concentration_summary": { "type": "string" },
+        "exposure_summary": { "type": "string" },
+        "recent_activity_summary": { "type": "string" }
+      }
+    },
+    "proposed_action": {
+      "type": "object",
+      "description": "The specific action being proposed for review.",
+      "required": ["type", "description"],
+      "properties": {
+        "type": { "type": "string" },
+        "description": { "type": "string" },
+        "parameters": { "type": "object" }
+      }
+    },
+    "suitability": {
+      "type": "object",
+      "description": "Result of comparing the proposed action to the investor's stated mandate and risk profile.",
+      "properties": {
+        "match": { "type": "boolean" },
+        "notes": { "type": "string" }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "description": "Result of comparing the proposed action to firm-level or configured policy constraints.",
+      "properties": {
+        "match": { "type": "boolean" },
+        "notes": { "type": "string" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "description": "The traceable basis for this decision.",
+      "properties": {
+        "sources": { "type": "array", "items": { "type": "string" } },
+        "reasoning_summary": { "type": "string" }
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "System-assigned confidence score for this decision, 0 to 1."
+    },
+    "human_approval": {
+      "type": "object",
+      "description": "Record of human review, when the disposition requires or received one.",
+      "properties": {
+        "reviewed_by": { "type": "string" },
+        "reviewed_at": { "type": "string", "format": "date-time" },
+        "decision": { "type": "string" }
+      }
+    },
+    "disposition": {
+      "type": "string",
+      "description": "The resolved outcome of this decision. PROCEED, REVIEW, ESCALATE, and DENY are the business dispositions defined by this specification. Technical systems may separately represent NOT_EVALUATED where a check could not be completed, outside this enum.",
+      "enum": ["PROCEED", "REVIEW", "ESCALATE", "DENY"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
